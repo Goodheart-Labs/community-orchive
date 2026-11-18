@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Community Orchive</title>
+<style>
+  :root { --green: #2f6b1f; --dark: #17250f; --pale: #eef4e6; --line: #cfdcc0; --ink: #1c1c1a; --dim: #5d6655; --red: #a3261a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: #fbfcf8; }
+  a { color: var(--green); }
+  header { background: var(--dark); color: #fff; padding: 40px 20px 32px; text-align: center; }
+  header h1 { margin: 0; font-size: clamp(34px, 7vw, 60px); letter-spacing: -1px; line-height: 1.05; }
+  header h1 span { display: inline-block; color: #9be36f; transform: rotate(-4deg); }
+  header p { margin: 12px auto 0; max-width: 560px; color: #d6e6c8; font-size: 18px; }
+  .stats { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 22px; }
+  .stats b { display: block; font-size: 26px; color: #9be36f; }
+  .stats span { font-size: 13px; color: #b9cbaa; }
+  main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 60px; display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 28px; }
+  @media (max-width: 760px) { main { grid-template-columns: minmax(0, 1fr); } section { order: -1; } }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); margin: 28px 0 10px; }
+  h2:first-child { margin-top: 0; }
+  .git { display: block; width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 8px; font: inherit; color: inherit; cursor: pointer; }
+  .git:hover, .git.on { background: var(--pale); border-color: var(--line); }
+  .git small { display: block; color: var(--dim); }
+  .controls { display: flex; gap: 8px; margin-bottom: 14px; }
+  input, select, textarea, button.act { font: inherit; color: inherit; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  .controls input { flex: 1; min-width: 0; }
+  button.act { background: var(--green); color: #fff; border-color: var(--green); cursor: pointer; }
+  button.act.quiet { background: #fff; color: var(--green); }
+  .post { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 14px 16px; margin-bottom: 10px; }
+  .post .who { font-weight: 700; }
+  .post .who span { font-weight: 400; color: var(--dim); }
+  .post .re { color: var(--dim); font-size: 14px; border-left: 3px solid var(--line); padding-left: 8px; margin: 6px 0; }
+  .post .txt { font-size: 18px; margin: 6px 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .post .note { background: var(--pale); border-radius: 8px; padding: 8px 10px; font-size: 14px; margin: 8px 0; }
+  .post .note b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--green); }
+  .post .meta { color: var(--dim); font-size: 13px; display: flex; gap: 2px 14px; flex-wrap: wrap; }
+  .apps { display: grid; gap: 8px; padding: 0; margin: 0; list-style: none; }
+  .apps li { border: 1px dashed var(--line); border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+  .apps b { display: block; }
+  textarea { width: 100%; min-height: 150px; font: 13px/1.4 ui-monospace, Menlo, monospace; }
+  pre { background: var(--dark); color: #d6e6c8; padding: 12px; border-radius: 8px; font-size: 13px; overflow-x: auto; }
+  .err { color: var(--red); white-space: pre-wrap; font-size: 14px; }
+  .ok { color: var(--green); font-size: 14px; }
+  .empty { color: var(--dim); padding: 30px 0; text-align: center; }
+  footer { text-align: center; color: var(--dim); font-size: 13px; padding: 0 16px 40px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Community <span>Orchive</span></h1>
+  <p>An open database of orc and goblin posts dat anyone can build on. Or krump.</p>
+  <div class="stats" id="stats"></div>
+</header>
+<main>
+  <aside>
+    <h2>Da gitz</h2>
+    <div id="gitz"></div>
+    <h2>Built on da Orchive</h2>
+    <ul class="apps">
+      <li><b>WAAAGH-o-meter</b><span id="waaagh"></span></li>
+      <li><b>Short-Finder</b>Finds every git who called Skarsnik short. By Skarsnik. 14 found, 0 remainin.</li>
+      <li><b>Grudge Search</b>Built by a stunty. Banned. Somehow still runnin.</li>
+      <li><b>Fred Unroller</b>Unrolls a fred. Den hits you wiv it.</li>
+    </ul>
+  </aside>
+  <section>
+    <h2>Da feed</h2>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Search da Orchive (try: stunties)" aria-label="Search posts">
+      <select id="sort" aria-label="Sort">
+        <option value="top">Most oi'd</option>
+        <option value="new">Newest</option>
+        <option value="old">Oldest</option>
+      </select>
+    </div>
+    <div id="feed"></div>
+
+    <h2>Upload yer archive</h2>
+    <p>Paste one git's archive below. It gets checked and joins da feed on dis page. To get it in for good, download da file and <a href="https://github.com/Goodheart-Labs/community-orchive/tree/main/data" target="_blank" rel="noopener">add it to da data folder on GitHub</a>. Do not frow it.</p>
+    <textarea id="up" spellcheck="false" aria-label="Archive JSON"></textarea>
+    <p><button class="act" id="add">Add to da Orchive</button> <button class="act quiet" id="example">Show me 'ow</button> <a id="dl" hidden>Download yer file</a></p>
+    <div id="msg"></div>
+
+    <h2>Da API</h2>
+    <p>Every post is in one file, <a href="orchive.json">orchive.json</a>: a list of archives, one per git. Build wot you like.</p>
+    <pre>{"account": {"handle": "a-z 0-9 _", "name": "...", "kind": "Night Goblin",
+             "bio": "...", "followers": 14},
+ "tweets": [{"at": "2522-07-14 10:02", "text": "up to 280",
+             "likes": 0, "retweets": 0,
+             "id": "optional, so uvver gitz can reply",
+             "reply_to": "optional, handle/id",
+             "note": "optional, context da boyz added"}]}</pre>
+  </section>
+</main>
+<footer>A parody. Not part of Community Archive or Games Workshop. Dates are Imperial Calendar. Da squig ate 2516 frough 2518. <a href="https://github.com/Goodheart-Labs/community-orchive" target="_blank" rel="noopener">GitHub</a></footer>
+
+<script>
+const DATA = __ORCHIVE_DATA__;
+const state = { q: "", sort: "top", who: null };
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const num = n => n.toLocaleString("en-US");
+
+function posts() {
+  const out = [], byId = {};
+  for (const a of DATA) a.tweets.forEach((t, i) => {
+    const p = { ...t, acct: a.account, order: i };
+    out.push(p);
+    if (t.id) byId[a.account.handle + "/" + t.id] = p;
+  });
+  for (const p of out) p.parent = p.reply_to ? byId[p.reply_to] : null;
+  return out;
+}
+
+function render() {
+  const all = posts();
+  const waaaghs = all.flatMap(p => (p.text.match(/WA{2,}GH/gi) || []).map(w => ({ len: w.length - 3, p })));
+  const stats = [[all.length, "posts"], [DATA.length, "gitz"], [waaaghs.length, "WAAAGHs"],
+                 [all.reduce((s, p) => s + p.likes, 0), "oi's"]];
+  $("stats").replaceChildren(...stats.map(([n, label]) => { const d = el("div"); d.append(el("b", "", num(n)), el("span", "", label)); return d; }));
+  const best = waaaghs.sort((a, b) => b.len - a.len)[0];
+  $("waaagh").textContent = best ? `Longest WAAAGH on record: ${best.len} A's, by @${best.p.acct.handle}.` : "No WAAAGH on record. Shameful.";
+
+  $("gitz").replaceChildren(...DATA.map(a => {
+    const b = el("button", "git" + (state.who === a.account.handle ? " on" : ""), a.account.name);
+    b.append(el("small", "", `@${a.account.handle} · ${a.account.kind} · ${num(a.account.followers)} followers`));
+    b.onclick = () => { state.who = state.who === a.account.handle ? null : a.account.handle; render(); };
+    return b;
+  }));
+
+  const q = state.q.trim().toLowerCase();
+  const shown = all.filter(p => (!state.who || p.acct.handle === state.who) &&
+    (!q || (p.text + " " + p.acct.name + " " + p.acct.handle + " " + (p.note || "")).toLowerCase().includes(q)));
+  const byTime = (a, b) => a.at.localeCompare(b.at) || a.order - b.order;
+  shown.sort(state.sort === "top" ? (a, b) => b.likes - a.likes : state.sort === "old" ? byTime : (a, b) => byTime(b, a));
+  const who = state.who && DATA.find(a => a.account.handle === state.who);
+  const cards = shown.map(p => {
+    const c = el("article", "post");
+    const w = el("div", "who", p.acct.name + " ");
+    w.append(el("span", "", "@" + p.acct.handle));
+    c.append(w);
+    if (p.parent) c.append(el("div", "re", `Replyin to @${p.parent.acct.handle}: ${p.parent.text}`));
+    c.append(el("div", "txt", p.text));
+    if (p.note) { const n = el("div", "note"); n.append(el("b", "", "Boyz added context"), p.note); c.append(n); }
+    const m = el("div", "meta");
+    m.append(el("span", "", p.at + " IC"), el("span", "", num(p.likes) + " oi's"), el("span", "", num(p.retweets) + " shouted again"));
+    c.append(m);
+    return c;
+  });
+  if (who) cards.unshift(el("p", "", who.account.bio));
+  if (!shown.length) cards.push(el("div", "empty", "Nuffink. Either nobody said it or da squig ate it."));
+  $("feed").replaceChildren(...cards);
+}
+
+// The same rules as validate() in build.py.
+function problems(a) {
+  const errs = [], H = /^[a-z0-9_]{1,20}$/, AT = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+  const text = (v, most) => typeof v === "string" && v.trim().length > 0 && v.length <= most;
+  const count = v => Number.isInteger(v) && v >= 0;
+  const acct = a && a.account, tweets = a && a.tweets;
+  if (!acct || typeof acct !== "object" || !Array.isArray(tweets) || !tweets.length) return ["Needs an account and at least one tweet."];
+  if (typeof acct.handle !== "string" || !H.test(acct.handle)) return ["handle must be 1-20 of a-z, 0-9, _"];
+  for (const [k, most] of [["name", 50], ["kind", 40], ["bio", 160]]) if (!text(acct[k], most)) errs.push(`${k} must be 1-${most} characters`);
+  if (!count(acct.followers)) errs.push("followers must be a whole number");
+  const ids = new Set();
+  for (const o of DATA) if (o.account.handle !== acct.handle) for (const t of o.tweets) if (t.id) ids.add(o.account.handle + "/" + t.id);
+  tweets.forEach((t, i) => {
+    const where = `tweet ${i + 1}: `;
+    if (!t || typeof t !== "object") return errs.push(where + "not an object");
+    if (typeof t.at !== "string" || !AT.test(t.at)) errs.push(where + "at must look like 2522-07-14 10:02");
+    if (!text(t.text, 280)) errs.push(where + "text must be 1-280 characters");
+    if (!count(t.likes) || !count(t.retweets)) errs.push(where + "likes and retweets must be whole numbers");
+    if ("note" in t && !text(t.note, 280)) errs.push(where + "note must be 1-280 characters");
+    if ("id" in t) {
+      const key = acct.handle + "/" + t.id;
+      if (typeof t.id !== "string" || !H.test(t.id)) errs.push(where + "id must be 1-20 of a-z, 0-9, _");
+      else if (ids.has(key)) errs.push(where + `id ${t.id} used twice`);
+      else ids.add(key);
+    }
+  });
+  tweets.forEach((t, i) => { if (t && typeof t === "object" && "reply_to" in t && !ids.has(t.reply_to)) errs.push(`tweet ${i + 1}: reply_to matches no tweet id`); });
+  return errs;
+}
+
+$("q").oninput = e => { state.q = e.target.value; render(); };
+$("sort").onchange = e => { state.sort = e.target.value; render(); };
+$("example").onclick = () => {
+  $("up").value = JSON.stringify({
+    account: { handle: "yer_name", name: "Yer Name", kind: "Goblin", bio: "Wot you do.", followers: 3 },
+    tweets: [{ at: "2523-05-01 12:00", text: "first post. is dis fing on", likes: 1, retweets: 0 },
+             { at: "2523-05-01 12:01", text: "no you're not", likes: 0, retweets: 0, reply_to: "grimgor/best" }]
+  }, null, 1);
+};
+$("add").onclick = () => {
+  const msg = $("msg"), dl = $("dl");
+  dl.hidden = true;
+  let a;
+  try { a = JSON.parse($("up").value); } catch (e) { msg.className = "err"; msg.textContent = "Dat's not JSON: " + e.message; return; }
+  const errs = problems(a);
+  if (errs.length) { msg.className = "err"; msg.textContent = errs.join("\n"); return; }
+  const at = DATA.findIndex(o => o.account.handle === a.account.handle);
+  if (at >= 0) DATA[at] = a; else DATA.push(a);
+  if (dl.href) URL.revokeObjectURL(dl.href);
+  dl.href = URL.createObjectURL(new Blob([JSON.stringify(a, null, 1) + "\n"], { type: "application/json" }));
+  dl.download = a.account.handle + ".json";
+  dl.hidden = false;
+  msg.className = "ok";
+  msg.textContent = `@${a.account.handle} is in, on dis page only. Reload and it's gone.`;
+  state.who = a.account.handle;
+  render();
+};
+render();
+</script>
+</body>
+</html>

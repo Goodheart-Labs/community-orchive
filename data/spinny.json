@@ -1,0 +1,47 @@
+{
+ "account": {
+  "handle": "spinny",
+  "name": "spinny",
+  "kind": "Night Goblin Fanatic",
+  "bio": "ball. chain. mushroom.",
+  "followers": 2201
+ },
+ "tweets": [
+  {
+   "at": "2519-10-31 00:00",
+   "text": "ate da mushroom wiv da 'at on. gonna go for a spin",
+   "likes": 800,
+   "retweets": 90
+  },
+  {
+   "at": "2519-10-31 00:02",
+   "text": "WHEEEEEEEEEEEEEEEEEEEEE",
+   "likes": 4100,
+   "retweets": 1900
+  },
+  {
+   "at": "2519-10-31 00:03",
+   "text": "WHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+   "likes": 3900,
+   "retweets": 1700
+  },
+  {
+   "at": "2519-10-31 00:09",
+   "text": "wot did I 'it",
+   "likes": 2700,
+   "retweets": 400
+  },
+  {
+   "at": "2519-10-31 00:10",
+   "text": "sorry Nobbla",
+   "likes": 6100,
+   "retweets": 2200
+  },
+  {
+   "at": "2521-10-31 00:00",
+   "text": "found annuva mushroom",
+   "likes": 5000,
+   "retweets": 1600
+  }
+ ]
+}

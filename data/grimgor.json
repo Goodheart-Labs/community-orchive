@@ -1,0 +1,56 @@
+{
+ "account": {
+  "handle": "grimgor",
+  "name": "Grimgor Ironhide",
+  "kind": "Black Orc",
+  "bio": "Da best. No DMs.",
+  "followers": 481220
+ },
+ "tweets": [
+  {
+   "at": "2519-03-02 05:10",
+   "text": "I'Z DA BEST",
+   "likes": 48211,
+   "retweets": 9120,
+   "id": "best",
+   "note": "Dis is true. Da last git who added different context is ded."
+  },
+  {
+   "at": "2519-06-11 14:40",
+   "text": "day 4 of no fight. boyz gettin twitchy. I'm gettin twitchy. gonna go find sumfink",
+   "likes": 8830,
+   "retweets": 1204
+  },
+  {
+   "at": "2520-01-19 06:00",
+   "text": "stop askin wot my mornin routine is. I wake up. I am angry. dat's it",
+   "likes": 21040,
+   "retweets": 6021
+  },
+  {
+   "at": "2521-09-30 11:15",
+   "text": "sum git sed \"violence never solved anyfink\". solved 'im",
+   "likes": 30177,
+   "retweets": 8800
+  },
+  {
+   "at": "2522-02-08 19:22",
+   "text": "Gitsnik is not an axe it is a lifestyle",
+   "likes": 5120,
+   "retweets": 610
+  },
+  {
+   "at": "2523-04-01 23:50",
+   "text": "beat up da Everchosen. 'eadbutted 'im. told 'im I woz da best. went 'ome. not takin questions",
+   "likes": 61900,
+   "retweets": 20411,
+   "id": "everchosen"
+  },
+  {
+   "at": "2523-04-02 00:05",
+   "text": "WAAAAAAAAAAAAAAAAAAAAAGH",
+   "likes": 40100,
+   "retweets": 12000
+  }
+ ]
+}

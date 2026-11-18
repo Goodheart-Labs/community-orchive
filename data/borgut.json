@@ -1,0 +1,50 @@
+{
+ "account": {
+  "handle": "borgut",
+  "name": "Borgut Facebeater",
+  "kind": "Black Orc",
+  "bio": "Second-biggest boss @ Grimgor's Ladz. Finkfluencer. Opinions are da boss's.",
+  "followers": 12950
+ },
+ "tweets": [
+  {
+   "at": "2519-03-02 05:11",
+   "text": "dis. so much dis, boss.",
+   "likes": 310,
+   "retweets": 12,
+   "reply_to": "grimgor/best"
+  },
+  {
+   "at": "2520-04-04 07:00",
+   "text": "I krumped 300 boyz dis mornin. 'ere's wot it taught me about leadership 🧵",
+   "likes": 2100,
+   "retweets": 890,
+   "id": "lead"
+  },
+  {
+   "at": "2520-04-04 07:01",
+   "text": "1/ boyz don't leave bad tribes. dey leave bad bosses. usually feet first",
+   "likes": 1800,
+   "retweets": 760,
+   "reply_to": "borgut/lead"
+  },
+  {
+   "at": "2521-06-06 07:00",
+   "text": "HIRIN: self-startin gitz who thrive in a fast-paced, 'igh-animosity environment. no stunties",
+   "likes": 940,
+   "retweets": 420
+  },
+  {
+   "at": "2522-01-01 07:00",
+   "text": "'umbled to announce I am now second-biggest boss. 'ardly 'ad to stab da last one at all",
+   "likes": 3300,
+   "retweets": 500
+  },
+  {
+   "at": "2522-09-09 07:00",
+   "text": "agree?",
+   "likes": 45,
+   "retweets": 2
+  }
+ ]
+}

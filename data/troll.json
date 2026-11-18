@@ -1,0 +1,49 @@
+{
+ "account": {
+  "handle": "troll",
+  "name": "troll",
+  "kind": "Stone Troll",
+  "bio": "wot",
+  "followers": 14
+ },
+ "tweets": [
+  {
+   "at": "2515-01-12 08:00",
+   "text": "dat woz my bruvver",
+   "likes": 9100,
+   "retweets": 2300,
+   "reply_to": "grom/troll"
+  },
+  {
+   "at": "2515-01-12 08:01",
+   "text": "forgot",
+   "likes": 3300,
+   "retweets": 600
+  },
+  {
+   "at": "2520-02-02 08:00",
+   "text": "'ow to stop bein on fire",
+   "likes": 12800,
+   "retweets": 5100,
+   "note": "Dis is not da search bar."
+  },
+  {
+   "at": "2520-02-02 08:05",
+   "text": "rock",
+   "likes": 700,
+   "retweets": 40
+  },
+  {
+   "at": "2522-05-05 08:00",
+   "text": "hungry",
+   "likes": 1500,
+   "retweets": 90
+  },
+  {
+   "at": "2523-03-03 08:00",
+   "text": "wot",
+   "likes": 2200,
+   "retweets": 310
+  }
+ ]
+}
