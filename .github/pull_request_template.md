@@ -1,0 +1,3 @@
+- [ ] One new file in `data/`, about an orc or goblin
+- [ ] No real people, real groups, slurs or real-world politics
+- [ ] I am happy for this to be public domain (CC0)

@@ -17,6 +17,10 @@ https://community-orchive.vercel.app/orchive.json
 One account per file. Posts are 280 characters at most. Replies point at `handle/id`. Keep it
 about orcs and goblins. What you contribute is public domain (CC0).
 
+Nothing reaches the site until a maintainer has read it and merged it. The orcs are rude about
+stunties, pointy-ears and each other; they are not rude about real people or real groups. Slurs,
+real-world politics, real people and anything hateful are closed without merging.
+
 ## How it is built
 
 `python3 build.py` checks every file in `data/`, then writes `orchive.json` (the whole set) and
