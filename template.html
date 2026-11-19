@@ -100,10 +100,11 @@
              "likes": 0, "retweets": 0,
              "id": "optional, so uvver gitz can reply",
              "reply_to": "optional, handle/id",
-             "note": "optional, context da boyz added"}]}</pre>
+             "note": "optional, context da boyz added",
+             "parody_of": "optional, link to da 'umie tweet it mocks"}]}</pre>
   </section>
 </main>
-<footer>A parody. Not part of Community Archive or Games Workshop. Dates are Imperial Calendar. Da squig ate 2516 frough 2518. <a href="https://github.com/Goodheart-Labs/community-orchive" target="_blank" rel="noopener">GitHub</a></footer>
+<footer>A parody. Not part of Community Archive or Games Workshop. Dates are Imperial Calendar. Da squig ate 2516 frough 2518. Some posts mock top tweets from da real fing, <a href="https://www.community-archive.org/" target="_blank" rel="noopener">Community Archive</a>. <a href="https://github.com/Goodheart-Labs/community-orchive" target="_blank" rel="noopener">GitHub</a></footer>
 
 <script>
 const DATA = __ORCHIVE_DATA__;
@@ -111,6 +112,7 @@ const state = { q: "", sort: "top", who: null };
 const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const num = n => n.toLocaleString("en-US");
+const ORIGINAL = /^https:\/\/x\.com\/(i|[A-Za-z0-9_]{1,15})\/status\/\d{5,20}$/;
 
 function posts() {
   const out = [], byId = {};
@@ -155,6 +157,11 @@ function render() {
     if (p.note) { const n = el("div", "note"); n.append(el("b", "", "Boyz added context"), p.note); c.append(n); }
     const m = el("div", "meta");
     m.append(el("span", "", p.at + " IC"), el("span", "", num(p.likes) + " oi's"), el("span", "", num(p.retweets) + " shouted again"));
+    if (typeof p.parody_of === "string" && ORIGINAL.test(p.parody_of)) {
+      const a = el("a", "", "wot da 'umie said");
+      a.href = p.parody_of; a.target = "_blank"; a.rel = "noopener";
+      m.append(a);
+    }
     c.append(m);
     return c;
   });
@@ -182,6 +189,7 @@ function problems(a) {
     if (!text(t.text, 280)) errs.push(where + "text must be 1-280 characters");
     if (!count(t.likes) || !count(t.retweets)) errs.push(where + "likes and retweets must be whole numbers");
     if ("note" in t && !text(t.note, 280)) errs.push(where + "note must be 1-280 characters");
+    if ("parody_of" in t && !(typeof t.parody_of === "string" && ORIGINAL.test(t.parody_of))) errs.push(where + "parody_of must be a tweet link like https://x.com/name/status/123456");
     if ("id" in t) {
       const key = acct.handle + "/" + t.id;
       if (typeof t.id !== "string" || !H.test(t.id)) errs.push(where + "id must be 1-20 of a-z, 0-9, _");

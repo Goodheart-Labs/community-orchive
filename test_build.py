@@ -33,6 +33,8 @@ class Orchive(unittest.TestCase):
             "negative likes": lambda b: b[0]["tweets"][0].update(likes=-1),
             "bad date": lambda b: b[0]["tweets"][0].update(at="yesterday"),
             "no tweets": lambda b: b[0].update(tweets=[]),
+            "parody link elsewhere": lambda b: b[0]["tweets"][0].update(parody_of="https://evil.example/x.com/a/status/12345"),
+            "parody link script": lambda b: b[0]["tweets"][0].update(parody_of="javascript:alert(1)"),
             "newline handle": lambda b: b[0]["account"].update(handle="grug\n"),
             "list reply": lambda b: b[0]["tweets"][0].update(reply_to=["x"]),
             "junk entries": lambda b: b.extend([None, {"account": "oi", "tweets": [1]}]),

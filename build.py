@@ -8,6 +8,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 HANDLE = re.compile(r"^[a-z0-9_]{1,20}$")
 AT = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$")
+ORIGINAL = re.compile(r"^https://x\.com/(i|[A-Za-z0-9_]{1,15})/status/\d{5,20}$")
 LIMITS = {"name": 50, "kind": 40, "bio": 160}
 
 
@@ -56,6 +57,8 @@ def validate(archives):
                 errs.append(f"{where}: likes and retweets must be whole numbers")
             if "note" in t and not _text(t["note"], 280):
                 errs.append(f"{where}: note must be 1-280 characters")
+            if "parody_of" in t and not (isinstance(t["parody_of"], str) and ORIGINAL.fullmatch(t["parody_of"])):
+                errs.append(f"{where}: parody_of must be a tweet link like https://x.com/name/status/123456")
             if "id" in t:
                 if not isinstance(t["id"], str) or not HANDLE.fullmatch(t["id"]):
                     errs.append(f"{where}: id must be 1-20 of a-z, 0-9, _")
