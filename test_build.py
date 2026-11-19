@@ -50,19 +50,19 @@ class Orchive(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             out = Path(d)
             build.write_site(self.good, out)
-            posts = json.loads((out / "api" / "posts.json").read_text())
+            posts = json.loads((out / "api" / "posts.json").read_text(encoding="utf-8"))
             self.assertEqual(len(posts), sum(len(a["tweets"]) for a in self.good))
-            self.assertEqual(json.loads((out / "orchive.json").read_text()), self.good)
+            self.assertEqual(json.loads((out / "orchive.json").read_text(encoding="utf-8")), self.good)
             for a in self.good:
-                one = json.loads((out / "api" / "gitz" / f"{a['account']['handle']}.json").read_text())
+                one = json.loads((out / "api" / "gitz" / f"{a['account']['handle']}.json").read_text(encoding="utf-8"))
                 self.assertEqual(one, a)
             for name in build.APPS:
-                html = (out / f"{name}.html").read_text()
+                html = (out / f"{name}.html").read_text(encoding="utf-8")
                 self.assertIn(f'data-app="{name}"', html)
                 self.assertIn(f"  {name}(", html, f"apps.html has no code for {name}")
                 self.assertNotIn("__", html)
-            for link in re.findall(r'<li><a href="([a-z]+)"', (out / "index.html").read_text()):
-                self.assertIn(link, build.APPS)
+            links = re.findall(r'<li><a href="([a-z]+)"', (out / "index.html").read_text(encoding="utf-8"))
+            self.assertEqual(sorted(links), sorted(build.APPS))
 
     def test_script_closer_cannot_end_the_data_block(self):
         bad = copy.deepcopy(self.good)

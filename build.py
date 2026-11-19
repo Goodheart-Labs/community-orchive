@@ -2,6 +2,7 @@
 """Check every archive in data/, then write orchive.json and the one-file index.html."""
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -124,6 +125,7 @@ def main():
     if errs:
         print("\n".join(errs), file=sys.stderr)
         return 1
+    shutil.rmtree(HERE / "public", ignore_errors=True)  # no stale pages from a removed account
     write_site(archives, HERE / "public")
     print(f"{len(archives)} gitz, {sum(len(a['tweets']) for a in archives)} posts")
     return 0
