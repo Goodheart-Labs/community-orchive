@@ -35,6 +35,16 @@
   #who p { margin: 6px 0; }
   #who .dim { color: #bdbdb5; font-size: 14px; }
   #who button { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--hot); color: #111; cursor: pointer; margin-top: 6px; }
+  .map { position: relative; height: min(72vh, 540px); border: 2px solid var(--dark); border-radius: 12px; margin-bottom: 10px; overflow: hidden;
+         background: linear-gradient(var(--line) 1px, transparent 0) 0 0 / 100% 20%, linear-gradient(90deg, var(--line) 1px, transparent 0) 0 0 / 20% 100%, #fff; }
+  .ax { position: absolute; font-size: 12px; color: var(--dim); }
+  .ax.x { right: 8px; bottom: 4px; }
+  .ax.y { left: 4px; top: 8px; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .dot { position: absolute; width: 54px; transform: translate(-50%, 50%); border: 0; background: none; padding: 0; cursor: pointer; font: 11px/1.2 system-ui, sans-serif; color: var(--ink); }
+  .dot .face { aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; }
+  .dot .face svg { width: 74%; }
+  .dot span { display: block; background: #fffc; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dot.on .face { outline: 4px solid var(--hot); }
   footer { text-align: center; color: var(--dim); font-size: 13px; padding: 0 16px 40px; }
 </style>
 </head>
@@ -64,9 +74,9 @@ function face(handle) {
     <path d="M30 46 54 54 52 60 30 54ZM90 46 66 54 68 60 90 54Z" fill="#17250f"/>
     <circle cx="43" cy="58" r="3.5" fill="#e23b2a"/><circle cx="77" cy="58" r="3.5" fill="#e23b2a"/>
     <path d="M34 84Q60 76 86 84 60 96 34 84Z" fill="#17250f"/>
-    <path d="M38 86 42 ${70 - h % 9} 48 84ZM82 86 78 ${70 - (h >> 3) % 9} 72 84Z" fill="#f1ead0"/></svg>`;
+    <path d="M38 86 42 ${70 - h % 9} 48 84ZM82 86 78 ${70 - (h >>> 3) % 9} 72 84Z" fill="#f1ead0"/></svg>`;
   const d = el("div", "face");
-  d.style.background = ["#2b2b28", "#3a2f1c", "#1f2d3a", "#3a1f24"][(h >> 5) % 4];
+  d.style.background = ["#2b2b28", "#3a2f1c", "#1f2d3a", "#3a1f24"][(h >>> 5) % 4];
   d.innerHTML = svg;  // built only from the fixed drawing and numbers above, never from post text
   return d;
 }
@@ -98,6 +108,32 @@ const APPS = {
       grid.append(t);
     }
     return [grid, who];
+  },
+  neighborcs(posts, gitz) {
+    $("t").textContent = "Meet Yer Neighborcs";
+    $("sub").textContent = "A map dat shows which gitz fink most like you. Tap yerself.";
+    const FIGHT = /krump|fight|waa+gh|beat|'eadbutt|stab|scrap|solved|angry|\b(bit|ate|ded|'it)\b/i;
+    const pts = gitz.map(a => {
+      const mine = posts.filter(p => p.handle === a.account.handle);
+      return { a: a.account, brutal: mine.filter(p => FIGHT.test(p.text)).length / mine.length,
+               words: mine.reduce((s, p) => s + p.text.split(/\s+/).length, 0) / mine.length };
+    });
+    const most = Math.max(...pts.map(p => p.words));
+    const map = el("div", "map"), say = el("div", "card", "Tap a git to find who finks like 'im.");
+    map.append(el("span", "ax x", "more brutal →"), el("span", "ax y", "more kunnin →"));
+    for (const p of pts) {
+      p.kunnin = p.words / most;
+      const b = el("button", "dot"); b.title = p.a.name;
+      b.style.left = (8 + 84 * p.brutal) + "%"; b.style.bottom = (6 + 78 * p.kunnin) + "%";
+      b.append(face(p.a.handle), el("span", "", p.a.name.split(/[ ,]/)[0]));
+      b.onclick = () => {
+        const near = pts.filter(q => q !== p).map(q => ({ q, d: Math.hypot(q.brutal - p.brutal, q.kunnin - p.kunnin) })).sort((x, y) => x.d - y.d)[0].q;
+        map.querySelectorAll(".on").forEach(x => x.classList.remove("on")); b.classList.add("on");
+        say.textContent = `${p.a.name} finks most like ${near.a.name}. Dey should meet. Dey should fight.`;
+      };
+      map.append(b);
+    }
+    return [map, say];
   },
   waaagh(posts) {
     $("t").textContent = "WAAAGH-o-meter";

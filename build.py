@@ -93,6 +93,7 @@ def page(archives):
 
 APPS = {  # page name -> title; each is apps.html with its name filled in
     "krumpr": "Krumpr",
+    "neighborcs": "Meet Yer Neighborcs",
     "waaagh": "WAAAGH-o-meter",
     "short": "Short-Finder",
     "grudges": "Grudge Search",

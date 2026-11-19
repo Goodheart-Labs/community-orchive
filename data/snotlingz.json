@@ -42,6 +42,13 @@
    "text": "hehe",
    "likes": 3100,
    "retweets": 1200
+  },
+  {
+   "at": "2522-06-05 00:00",
+   "text": "if everyone would just oi dis post",
+   "likes": 2472,
+   "retweets": 900,
+   "parody_of": "https://x.com/TylerAlterman/status/1798389150728765926"
   }
  ]
 }
