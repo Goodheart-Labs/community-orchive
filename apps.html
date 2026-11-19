@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ · Community Orchive</title>
+<meta property="og:title" content="__TITLE__ · Community Orchive">
+<meta property="og:image" content="https://community-orchive.vercel.app/share.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { --green: #2f6b1f; --dark: #17250f; --pale: #eef4e6; --line: #cfdcc0; --ink: #1c1c1a; --dim: #5d6655; --hot: #f2c230; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: #fbfcf8; }
+  a { color: var(--green); }
+  .bar { background: var(--dark); padding: 12px 16px; }
+  .bar a { color: #9be36f; text-decoration: none; font-weight: 700; }
+  main { max-width: 760px; margin: 0 auto; padding: 22px 16px 50px; }
+  h1 { font: 900 clamp(34px, 8vw, 54px)/1 Impact, "Arial Black", system-ui, sans-serif; text-transform: uppercase; margin: 0; }
+  #sub { color: var(--dim); margin: 8px 0 20px; }
+  .card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 12px 14px; margin-bottom: 10px; overflow-wrap: anywhere; }
+  .card small { color: var(--dim); display: block; }
+  .card.kid { margin-left: 26px; border-left: 4px solid var(--line); }
+  .meter { height: 12px; background: var(--green); border-radius: 6px; margin-top: 8px; min-width: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .tile { border: 0; border-radius: 12px; padding: 0; overflow: hidden; background: #111; color: #fff; text-align: left; font: inherit; cursor: pointer; }
+  .tile .face { aspect-ratio: 1; display: grid; place-items: center; }
+  .tile .face svg { width: 70%; }
+  .tile .cap { padding: 8px 10px 10px; }
+  .tile .cap b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tile .cap span { font-size: 13px; color: var(--hot); }
+  .tile.on { outline: 4px solid var(--hot); }
+  .krumpr h1 { color: #111; }
+  .krumpr h1 b { color: #b98a00; }
+  #who { position: sticky; bottom: 10px; background: #111; color: #fff; border-radius: 14px; padding: 14px 16px; margin-top: 14px; }
+  #who p { margin: 6px 0; }
+  #who .dim { color: #bdbdb5; font-size: 14px; }
+  #who button { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 9px 22px; background: var(--hot); color: #111; cursor: pointer; margin-top: 6px; }
+  footer { text-align: center; color: var(--dim); font-size: 13px; padding: 0 16px 40px; }
+</style>
+</head>
+<body data-app="__APP__">
+<div class="bar"><a href="/">&larr; Da Orchive</a></div>
+<main>
+  <h1 id="t"></h1>
+  <p id="sub"></p>
+  <div id="out">Loadin...</div>
+</main>
+<footer>Built on da Orchive's open data, <a href="orchive.json">orchive.json</a>. A parody. Not part of Community Archive, Games Workshop or any app you are finkin of.</footer>
+<script>
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const num = n => n.toLocaleString("en-US");
+const card = (head, body, cls) => { const c = el("div", "card" + (cls ? " " + cls : "")); c.append(el("small", "", head), body); return c; };
+const said = p => `@${p.handle} · ${p.at} IC`;
+
+// A number that is always the same for the same name, so a git's distance never changes.
+const hash = s => [...s].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
+
+function face(handle) {
+  const h = hash(handle), skin = ["#6aa832", "#4f8a28", "#7fb53c", "#3f7a3a", "#8a9a3a"][h % 5];
+  const svg = `<svg viewBox="0 0 120 110" aria-hidden="true">
+    <path d="M8 34 26 44 22 60ZM112 34 94 44 98 60Z" fill="${skin}"/>
+    <path d="M24 30Q60 6 96 30L100 70Q98 100 60 104 22 100 20 70Z" fill="${skin}"/>
+    <path d="M30 46 54 54 52 60 30 54ZM90 46 66 54 68 60 90 54Z" fill="#17250f"/>
+    <circle cx="43" cy="58" r="3.5" fill="#e23b2a"/><circle cx="77" cy="58" r="3.5" fill="#e23b2a"/>
+    <path d="M34 84Q60 76 86 84 60 96 34 84Z" fill="#17250f"/>
+    <path d="M38 86 42 ${70 - h % 9} 48 84ZM82 86 78 ${70 - (h >> 3) % 9} 72 84Z" fill="#f1ead0"/></svg>`;
+  const d = el("div", "face");
+  d.style.background = ["#2b2b28", "#3a2f1c", "#1f2d3a", "#3a1f24"][(h >> 5) % 4];
+  d.innerHTML = svg;  // built only from the fixed drawing and numbers above, never from post text
+  return d;
+}
+
+const APPS = {
+  krumpr(posts, gitz) {
+    document.body.classList.add("krumpr");
+    $("t").innerHTML = "Krump<b>r</b>";
+    $("sub").textContent = "Find lads near you. For a fight.";
+    const lads = gitz.map(a => ({ ...a.account, caves: 1 + hash(a.account.handle) % 12, posts: posts.filter(p => p.handle === a.account.handle) }))
+      .sort((a, b) => a.caves - b.caves);
+    const grid = el("div", "grid"), who = el("div"); who.id = "who"; who.hidden = true;
+    for (const lad of lads) {
+      const t = el("button", "tile");
+      const cap = el("div", "cap"); cap.append(el("b", "", lad.name), el("span", "", `${lad.caves} cave${lad.caves > 1 ? "s" : ""} away`));
+      t.append(face(lad.handle), cap);
+      t.onclick = () => {
+        grid.querySelectorAll(".on").forEach(x => x.classList.remove("on")); t.classList.add("on");
+        const top = [...lad.posts].sort((a, b) => b.likes - a.likes)[0];
+        const oi = el("button", "", "Oi"), reply = el("p");
+        oi.onclick = () => {
+          const p = lad.posts[Math.floor(Math.random() * lad.posts.length)];
+          reply.textContent = `${lad.name} sez: "${p.text}"` + (p.text.length % 2 ? " It's a scrap. Meet at da pit." : " Dat's a no. Probably.");
+        };
+        who.replaceChildren(el("b", "", `${lad.name}, ${lad.kind}`), el("p", "dim", `${lad.caves} cave${lad.caves > 1 ? "s" : ""} away · ${num(lad.followers)} followers`),
+          el("p", "", lad.bio), el("p", "dim", `Best known for: "${top.text}"`), oi, reply);
+        who.hidden = false;
+      };
+      grid.append(t);
+    }
+    return [grid, who];
+  },
+  waaagh(posts) {
+    $("t").textContent = "WAAAGH-o-meter";
+    const all = posts.flatMap(p => (p.text.match(/WA{2,}GH/gi) || []).map(w => ({ p, a: w.length - 3 }))).sort((x, y) => y.a - x.a);
+    $("sub").textContent = `Every WAAAGH on record, measured in A's. ${all.length} so far.`;
+    const most = all.length ? all[0].a : 1;
+    return all.map(({ p, a }) => { const c = card(`${a} A's · ${said(p)}`, p.text); const m = el("div", "meter"); m.style.width = (100 * a / most) + "%"; c.append(m); return c; });
+  },
+  short(posts) {
+    $("t").textContent = "Short-Finder";
+    const hits = posts.filter(p => /\b(short|small|little|tiny|runt)\b/i.test(p.text));
+    $("sub").textContent = `Finds every git who said "short" or fings like it. By Skarsnik. ${hits.length} found, 0 remainin.`;
+    return hits.map((p, i) => card(`Suspect ${i + 1} · ${said(p)}`, `"${p.text}" ` + (p.handle === "skarsnik" ? "Dat's me. Let off." : "Gobbla 'as been sent.")));
+  },
+  grudges(posts) {
+    $("t").textContent = "Grudge Search";
+    const hits = posts.filter(p => /stunt(y|ies)/i.test(p.text)).sort((a, b) => a.at.localeCompare(b.at));
+    $("sub").textContent = `Every word said against da stunties, written down by a stunty. ${hits.length} grudges. 0 settled.`;
+    return hits.map((p, i) => card(`Grudge ${i + 1} · ${said(p)}`, `Be it recorded dat @${p.handle} did say: "${p.text}" Dis shall be answered in blood.`));
+  },
+  freds(posts) {
+    $("t").textContent = "Fred Unroller";
+    $("sub").textContent = "Unrolls a fred. Den hits you wiv it.";
+    const byKey = {}, kids = {};
+    for (const p of posts) if (p.id) byKey[p.handle + "/" + p.id] = p;
+    for (const p of posts) if (p.reply_to && byKey[p.reply_to]) (kids[p.reply_to] = kids[p.reply_to] || []).push(p);
+    return Object.keys(kids).sort((a, b) => kids[b].length - kids[a].length).flatMap(k =>
+      [card(said(byKey[k]), byKey[k].text), ...kids[k].sort((a, b) => a.at.localeCompare(b.at)).map(p => card(said(p), p.text, "kid"))]);
+  },
+};
+
+fetch("orchive.json").then(r => r.json()).then(gitz => {
+  const posts = gitz.flatMap(a => a.tweets.map(t => ({ ...t, handle: a.account.handle })));
+  const made = APPS[document.body.dataset.app](posts, gitz);
+  $("out").replaceChildren(...(made.length ? made : [el("p", "", "Nuffink found.")]));
+}).catch(() => { $("out").textContent = "Da Orchive did not answer. Da squig may be awake."; });
+</script>
+</body>
+</html>

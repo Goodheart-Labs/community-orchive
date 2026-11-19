@@ -18,9 +18,18 @@
   * { box-sizing: border-box; }
   body { margin: 0; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: #fbfcf8; }
   a { color: var(--green); }
-  header { background: var(--dark); color: #fff; padding: 40px 20px 32px; text-align: center; }
-  header h1 { margin: 0; font-size: clamp(34px, 7vw, 60px); letter-spacing: -1px; line-height: 1.05; }
-  header h1 span { display: inline-block; color: #9be36f; transform: rotate(-4deg); }
+  header { background: var(--dark); color: #fff; text-align: center; position: relative; padding-bottom: 30px; }
+  header .checks { height: 24px; background: conic-gradient(#f2c230 25%, #15110a 0 50%, #f2c230 0 75%, #15110a 0) 0 0 / 24px 24px; }
+  header .dags { position: absolute; left: 0; right: 0; bottom: -13px; height: 14px; background: linear-gradient(135deg, var(--dark) 50%, transparent 0) 0 0 / 14px 14px, linear-gradient(225deg, var(--dark) 50%, transparent 0) 0 0 / 14px 14px; background-repeat: repeat-x; }
+  header .boss { width: clamp(84px, 16vw, 120px); margin: 22px auto 4px; display: block; }
+  header h1 { margin: 0; padding: 0 16px; font: 900 clamp(38px, 9vw, 76px)/1 Impact, "Arial Black", system-ui, sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+  header h1 span { display: inline-block; color: #9be36f; transform: rotate(-4deg); text-shadow: 3px 3px 0 #15110a; }
+  .apps a { font-weight: 700; display: block; }
+  #req { position: fixed; right: 14px; bottom: 14px; z-index: 5; text-align: right; }
+  #req > button { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: 10px 16px; background: #f2c230; color: #15110a; cursor: pointer; box-shadow: 0 2px 8px #0004; }
+  #req form { width: min(320px, calc(100vw - 28px)); background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 8px; text-align: left; box-shadow: 0 4px 18px #0003; }
+  #req textarea { min-height: 90px; font: inherit; }
+  #req small { display: block; color: var(--dim); margin: 6px 0; }
   header p { margin: 12px auto 0; max-width: 560px; color: #d6e6c8; font-size: 18px; }
   .stats { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 22px; }
   .stats b { display: block; font-size: 26px; color: #9be36f; }
@@ -58,9 +67,23 @@
 </head>
 <body>
 <header>
+  <div class="checks"></div>
+  <svg class="boss" viewBox="0 0 120 112" aria-hidden="true">
+    <path d="M30 22 18 0 44 14ZM90 22 102 0 76 14Z" fill="#e9e2c6"/>
+    <path d="M6 36 26 44 22 62ZM114 36 94 44 98 62Z" fill="#4f8a28"/>
+    <path d="M24 30Q60 6 96 30L100 70Q98 100 60 106 22 100 20 70Z" fill="#6aa832"/>
+    <path d="M20 38Q60 10 100 38L98 22Q60-4 22 22Z" fill="#3b3b37"/>
+    <path d="M56 12h8v30h-8z" fill="#3b3b37"/>
+    <path d="M28 48 54 56 52 63 28 56ZM92 48 66 56 68 63 92 56Z" fill="#15110a"/>
+    <circle cx="43" cy="61" r="4" fill="#e23b2a"/><circle cx="77" cy="61" r="4" fill="#e23b2a"/>
+    <path d="M32 86Q60 76 88 86 60 100 32 86Z" fill="#15110a"/>
+    <path d="M36 88 41 64 49 86ZM84 88 79 64 71 86Z" fill="#f4eed6"/>
+    <path d="M52 90l4-7 4 7zM60 90l4-7 4 7z" fill="#f4eed6"/>
+  </svg>
   <h1>Community <span>Orchive</span></h1>
   <p>An open database of orc and goblin posts dat anyone can build on. Or krump.</p>
   <div class="stats" id="stats"></div>
+  <div class="dags"></div>
 </header>
 <main>
   <aside>
@@ -68,10 +91,11 @@
     <div id="gitz"></div>
     <h2>Built on da Orchive</h2>
     <ul class="apps">
-      <li><b>WAAAGH-o-meter</b><span id="waaagh"></span></li>
-      <li><b>Short-Finder</b>Finds every git who called Skarsnik short. By Skarsnik. 14 found, 0 remainin.</li>
-      <li><b>Grudge Search</b>Built by a stunty. Banned. Somehow still runnin.</li>
-      <li><b>Fred Unroller</b>Unrolls a fred. Den hits you wiv it.</li>
+      <li><a href="krumpr">Krumpr</a>Find lads near you. For a fight.</li>
+      <li><a href="waaagh">WAAAGH-o-meter</a><span id="waaagh"></span></li>
+      <li><a href="short">Short-Finder</a>Finds every git who said "short". By Skarsnik.</li>
+      <li><a href="grudges">Grudge Search</a>Built by a stunty. Banned. Somehow still runnin.</li>
+      <li><a href="freds">Fred Unroller</a>Unrolls a fred. Den hits you wiv it.</li>
     </ul>
   </aside>
   <section>
@@ -93,7 +117,7 @@
     <div id="msg"></div>
 
     <h2>Da API</h2>
-    <p>Every post is in one file, <a href="orchive.json">orchive.json</a>: a list of archives, one per git. Build wot you like.</p>
+    <p>Every post is in one file, <a href="orchive.json">orchive.json</a>: a list of archives, one per git. Build wot you like; any site can load it. Smaller bits: <a href="api/gitz.json">api/gitz.json</a> (who's 'ere), <a href="api/posts.json">api/posts.json</a> (every post in one list), <a href="api/gitz/grimgor.json">api/gitz/grimgor.json</a> (one git).</p>
     <pre>{"account": {"handle": "a-z 0-9 _", "name": "...", "kind": "Night Goblin",
              "bio": "...", "followers": 14},
  "tweets": [{"at": "2522-07-14 10:02", "text": "up to 280",
@@ -105,6 +129,15 @@
   </section>
 </main>
 <footer>A parody. Not part of Community Archive or Games Workshop. Dates are Imperial Calendar. Da squig ate 2516 frough 2518. Some posts mock top tweets from da real fing, <a href="https://www.community-archive.org/" target="_blank" rel="noopener">Community Archive</a>. <a href="https://github.com/Goodheart-Labs/community-orchive" target="_blank" rel="noopener">Gitzhub</a></footer>
+
+<div id="req">
+  <form id="reqform" hidden>
+    <textarea id="reqtext" maxlength="1500" placeholder="Wot should be better?" aria-label="Your request"></textarea>
+    <small>Opens Gitzhub wiv yer words filled in, where you press send. Needs a Gitzhub account. A 'umie reads it before anyfink gets built.</small>
+    <button class="act">Take it to Gitzhub</button>
+  </form>
+  <button id="reqdot" aria-expanded="false">Request improvements</button>
+</div>
 
 <script>
 const DATA = __ORCHIVE_DATA__;
@@ -201,7 +234,15 @@ function problems(a) {
   return errs;
 }
 
-$("q").oninput = e => { state.q = e.target.value; render(); };
+$("reqdot").onclick = () => { const f = $("reqform"); f.hidden = !f.hidden; $("reqdot").setAttribute("aria-expanded", String(!f.hidden)); if (!f.hidden) $("reqtext").focus(); };
+$("reqform").onsubmit = e => {
+  e.preventDefault();
+  const words = $("reqtext").value.trim();
+  if (!words) return;
+  const q = new URLSearchParams({ title: "Request: " + words.split("\n")[0].slice(0, 60), body: words, labels: "request" });
+  window.open("https://github.com/Goodheart-Labs/community-orchive/issues/new?" + q, "_blank", "noopener");
+};
+$("q").oninput =e => { state.q = e.target.value; render(); };
 $("sort").onchange = e => { state.sort = e.target.value; render(); };
 $("example").onclick = () => {
   $("up").value = JSON.stringify({

@@ -1,6 +1,9 @@
 import copy
 import json
+import re
+import tempfile
 import unittest
+from pathlib import Path
 
 import build
 
@@ -42,6 +45,24 @@ class Orchive(unittest.TestCase):
         }
         for name, change in cases.items():
             self.assertTrue(self._broken(change), name)
+
+    def test_site_has_the_data_files_and_every_app_page(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = Path(d)
+            build.write_site(self.good, out)
+            posts = json.loads((out / "api" / "posts.json").read_text())
+            self.assertEqual(len(posts), sum(len(a["tweets"]) for a in self.good))
+            self.assertEqual(json.loads((out / "orchive.json").read_text()), self.good)
+            for a in self.good:
+                one = json.loads((out / "api" / "gitz" / f"{a['account']['handle']}.json").read_text())
+                self.assertEqual(one, a)
+            for name in build.APPS:
+                html = (out / f"{name}.html").read_text()
+                self.assertIn(f'data-app="{name}"', html)
+                self.assertIn(f"  {name}(", html, f"apps.html has no code for {name}")
+                self.assertNotIn("__", html)
+            for link in re.findall(r'<li><a href="([a-z]+)"', (out / "index.html").read_text()):
+                self.assertIn(link, build.APPS)
 
     def test_script_closer_cannot_end_the_data_block(self):
         bad = copy.deepcopy(self.good)

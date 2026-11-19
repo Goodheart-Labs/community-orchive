@@ -90,14 +90,41 @@ def page(archives):
     return (HERE / "template.html").read_text(encoding="utf-8").replace("__ORCHIVE_DATA__", blob)
 
 
+APPS = {  # page name -> title; each is apps.html with its name filled in
+    "krumpr": "Krumpr",
+    "waaagh": "WAAAGH-o-meter",
+    "short": "Short-Finder",
+    "grudges": "Grudge Search",
+    "freds": "Fred Unroller",
+}
+
+
+def write_site(archives, out):
+    """Write the whole site into `out`: the page, the data files and one page per app."""
+    def dump(path, obj):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(obj, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "index.html").write_text(page(archives), encoding="utf-8")
+    (out / "share.png").write_bytes((HERE / "share.png").read_bytes())
+    dump(out / "orchive.json", archives)
+    dump(out / "api" / "gitz.json", [dict(a["account"], posts=len(a["tweets"])) for a in archives])
+    dump(out / "api" / "posts.json", [dict(t, handle=a["account"]["handle"]) for a in archives for t in a["tweets"]])
+    for a in archives:
+        dump(out / "api" / "gitz" / f"{a['account']['handle']}.json", a)
+    shell = (HERE / "apps.html").read_text(encoding="utf-8")
+    for name, title in APPS.items():
+        (out / f"{name}.html").write_text(shell.replace("__APP__", name).replace("__TITLE__", title), encoding="utf-8")
+
+
 def main():
     archives = load()
     errs = validate(archives)
     if errs:
         print("\n".join(errs), file=sys.stderr)
         return 1
-    (HERE / "orchive.json").write_text(json.dumps(archives, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    (HERE / "index.html").write_text(page(archives), encoding="utf-8")
+    write_site(archives, HERE / "public")
     print(f"{len(archives)} gitz, {sum(len(a['tweets']) for a in archives)} posts")
     return 0
 

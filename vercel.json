@@ -1,8 +1,10 @@
 {
-  "buildCommand": "python3 build.py && mkdir -p public && cp index.html orchive.json share.png public/",
+  "buildCommand": "python3 build.py",
   "outputDirectory": "public",
   "framework": null,
+  "cleanUrls": true,
   "headers": [
-    { "source": "/orchive.json", "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }] }
+    { "source": "/orchive.json", "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }] },
+    { "source": "/api/(.*)", "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }] }
   ]
 }
